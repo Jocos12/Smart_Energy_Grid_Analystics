@@ -31,7 +31,7 @@ if MODE not in ("Raw", "Aggregate"):
 PORT = {"Raw": 8051, "Aggregate": 8052}[MODE]
 CAT = timezone(timedelta(hours=2), "CAT")
 DB = dict(host="localhost", port=5432, dbname="energy_grid", user="postgres",
-          password=os.environ.get("PGPASSWORD", "YOUR_PASSWORD"))
+          password=os.environ.get("PGPASSWORD", "123"))
 LOG = "dashboard_timings.csv"
 HEADER = ["mode", "logged_at_cat", "run_id", "start_date", "end_date", "meter_id",
           "panel1_ms", "panel2_ms", "panel3_ms", "panel4_ms", "panel5_ms",
