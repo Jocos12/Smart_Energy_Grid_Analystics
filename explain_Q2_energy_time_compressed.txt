@@ -1,0 +1,96 @@
+Limit  (cost=25387.14..25387.16 rows=10 width=16) (actual time=197.794..198.063 rows=10.00 loops=1)
+  Buffers: shared hit=17967
+  ->  Sort  (cost=25387.14..25387.64 rows=200 width=16) (actual time=197.792..198.059 rows=10.00 loops=1)
+        Sort Key: (sum(energy_time_compressed.power_kw)) DESC, energy_time_compressed.event_time
+        Sort Method: top-N heapsort  Memory: 25kB
+        Buffers: shared hit=17967
+        ->  Finalize GroupAggregate  (cost=25041.54..25382.82 rows=200 width=16) (actual time=197.005..197.862 rows=672.00 loops=1)
+              Group Key: energy_time_compressed.event_time
+              Buffers: shared hit=17967
+              ->  Gather Merge  (cost=25041.54..25367.22 rows=2720 width=16) (actual time=196.994..197.498 rows=672.00 loops=1)
+                    Workers Planned: 4
+                    Workers Launched: 4
+                    Buffers: shared hit=17967
+                    ->  Sort  (cost=24041.48..24043.18 rows=680 width=16) (actual time=96.026..96.039 rows=134.40 loops=5)
+                          Sort Key: energy_time_compressed.event_time
+                          Sort Method: quicksort  Memory: 31kB
+                          Buffers: shared hit=17967
+                          Worker 0:  Sort Method: quicksort  Memory: 28kB
+                          Worker 1:  Sort Method: quicksort  Memory: 31kB
+                          Worker 2:  Sort Method: quicksort  Memory: 28kB
+                          Worker 3:  Sort Method: quicksort  Memory: 28kB
+                          ->  Parallel Append  (cost=10.45..24009.49 rows=680 width=16) (actual time=0.932..95.904 rows=134.40 loops=5)
+                                Buffers: shared hit=17935
+                                ->  Partial GroupAggregate  (cost=11.05..303.96 rows=200 width=16) (actual time=1.422..7.030 rows=8.00 loops=1)
+                                      Group Key: _hyper_4_281_chunk.event_time
+                                      Buffers: shared hit=283
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_281_chunk  (cost=11.05..207.21 rows=18950 width=16) (actual time=0.509..3.898 rows=31685.00 loops=1)
+                                            Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                            Rows Removed by Filter: 315
+                                            Buffers: shared hit=283
+                                            ->  Parallel Index Scan Backward using _hyper_4_281_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_281_chunk_compressed  (cost=0.15..17.70 rows=19 width=84) (actual time=0.191..0.277 rows=32.00 loops=1)
+                                                  Index Cond: ((_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=47
+                                ->  Partial GroupAggregate  (cost=10.48..3142.94 rows=200 width=16) (actual time=0.978..51.503 rows=88.00 loops=1)
+                                      Group Key: _hyper_4_288_chunk.event_time
+                                      Buffers: shared hit=2360
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_288_chunk  (cost=10.48..2118.87 rows=204413 width=16) (actual time=0.307..26.723 rows=348417.00 loops=1)
+                                            Vectorized Filter: ((event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                            Buffers: shared hit=2360
+                                            ->  Parallel Index Scan Backward using _hyper_4_288_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_288_chunk_compressed  (cost=0.15..74.75 rows=205 width=84) (actual time=0.155..0.668 rows=349.00 loops=1)
+                                                  Index Cond: ((_ts_meta_v2_first_event_time >= '2026-09-22 00:00:00+02'::timestamp with time zone) AND (_ts_meta_v2_last_event_time < '2026-09-29 00:00:00+02'::timestamp with time zone))
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=109
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.409..30.746 rows=48.00 loops=2)
+                                      Group Key: _hyper_4_282_chunk.event_time
+                                      Buffers: shared hit=2582
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_282_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.104..15.098 rows=190076.00 loops=2)
+                                            Buffers: shared hit=2582
+                                            ->  Parallel Index Scan Backward using _hyper_4_282_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_282_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.028..0.365 rows=190.50 loops=2)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=126
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.672..48.033 rows=96.00 loops=1)
+                                      Group Key: _hyper_4_283_chunk.event_time
+                                      Buffers: shared hit=2586
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_283_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.156..23.048 rows=380121.00 loops=1)
+                                            Buffers: shared hit=2586
+                                            ->  Parallel Index Scan Backward using _hyper_4_283_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_283_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.056..0.573 rows=381.00 loops=1)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=126
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.623..32.730 rows=48.00 loops=2)
+                                      Group Key: _hyper_4_284_chunk.event_time
+                                      Buffers: shared hit=2583
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_284_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.187..16.248 rows=190092.50 loops=2)
+                                            Buffers: shared hit=2583
+                                            ->  Parallel Index Scan Backward using _hyper_4_284_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_284_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.054..0.425 rows=190.50 loops=2)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=126
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.415..25.219 rows=48.00 loops=2)
+                                      Group Key: _hyper_4_285_chunk.event_time
+                                      Buffers: shared hit=2571
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_285_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.093..11.964 rows=190078.50 loops=2)
+                                            Buffers: shared hit=2571
+                                            ->  Parallel Index Scan Backward using _hyper_4_285_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_285_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.017..0.256 rows=190.50 loops=2)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=126
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.393..44.165 rows=48.00 loops=2)
+                                      Group Key: _hyper_4_286_chunk.event_time
+                                      Buffers: shared hit=2485
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_286_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.036..18.904 rows=190059.50 loops=2)
+                                            Buffers: shared hit=2485
+                                            ->  Parallel Index Scan Backward using _hyper_4_286_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_286_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.011..0.231 rows=190.50 loops=2)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=129
+                                ->  Partial GroupAggregate  (cost=10.45..3426.53 rows=200 width=16) (actual time=0.492..107.049 rows=96.00 loops=1)
+                                      Group Key: _hyper_4_287_chunk.event_time
+                                      Buffers: shared hit=2485
+                                      ->  Custom Scan (ColumnarScan) on _hyper_4_287_chunk  (cost=10.45..2307.47 rows=223412 width=16) (actual time=0.057..48.847 rows=380147.00 loops=1)
+                                            Buffers: shared hit=2485
+                                            ->  Parallel Index Scan Backward using _hyper_4_287_chunk_compressed__ts_meta_v2_first_event_time__idx on _hyper_4_287_chunk_compressed  (cost=0.15..73.35 rows=224 width=84) (actual time=0.016..0.911 rows=381.00 loops=1)
+                                                  Index Searches: 1
+                                                  Buffers: shared hit=127
+Planning:
+  Buffers: shared hit=99
+Planning Time: 0.958 ms
+Execution Time: 198.414 ms
